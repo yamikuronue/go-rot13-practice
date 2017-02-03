@@ -23,7 +23,7 @@ func TestEncodeReturnsString(t *testing.T) {
 	}
 
 	for _, test := range table {
-		output := Encode(test.input)
+		output := EncodeRot13(test.input)
 		if output != test.expected {
 			t.Errorf("Incorrect string returned for input %s; expected %s but got %s", test.input, test.expected, output)
 		}

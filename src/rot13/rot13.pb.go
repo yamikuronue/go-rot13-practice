@@ -18,12 +18,6 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 
-import (
-	client "github.com/micro/go-micro/client"
-	server "github.com/micro/go-micro/server"
-	context "golang.org/x/net/context"
-)
-
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
@@ -70,91 +64,6 @@ func (m *EncodeResponse) GetOutput() string {
 func init() {
 	proto.RegisterType((*EncodeRequest)(nil), "EncodeRequest")
 	proto.RegisterType((*EncodeResponse)(nil), "EncodeResponse")
-}
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ client.Option
-var _ server.Option
-
-// Publisher API
-
-type Publisher interface {
-	Publish(ctx context.Context, msg interface{}, opts ...client.PublishOption) error
-}
-
-type publisher struct {
-	c     client.Client
-	topic string
-}
-
-func (p *publisher) Publish(ctx context.Context, msg interface{}, opts ...client.PublishOption) error {
-	return p.c.Publish(ctx, p.c.NewPublication(p.topic, msg), opts...)
-}
-
-func NewPublisher(topic string, c client.Client) Publisher {
-	if c == nil {
-		c = client.NewClient()
-	}
-	return &publisher{c, topic}
-}
-
-// Subscriber API
-
-func RegisterSubscriber(topic string, s server.Server, h interface{}, opts ...server.SubscriberOption) error {
-	return s.Subscribe(s.NewSubscriber(topic, h, opts...))
-}
-
-// Client API for Rot13 service
-
-type Rot13Client interface {
-	Encode(ctx context.Context, in *EncodeRequest, opts ...client.CallOption) (*EncodeResponse, error)
-}
-
-type rot13Client struct {
-	c           client.Client
-	serviceName string
-}
-
-func NewRot13Client(serviceName string, c client.Client) Rot13Client {
-	if c == nil {
-		c = client.NewClient()
-	}
-	if len(serviceName) == 0 {
-		serviceName = "rot13"
-	}
-	return &rot13Client{
-		c:           c,
-		serviceName: serviceName,
-	}
-}
-
-func (c *rot13Client) Encode(ctx context.Context, in *EncodeRequest, opts ...client.CallOption) (*EncodeResponse, error) {
-	req := c.c.NewRequest(c.serviceName, "Rot13.Encode", in)
-	out := new(EncodeResponse)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// Server API for Rot13 service
-
-type Rot13Handler interface {
-	Encode(context.Context, *EncodeRequest, *EncodeResponse) error
-}
-
-func RegisterRot13Handler(s server.Server, hdlr Rot13Handler, opts ...server.HandlerOption) {
-	s.Handle(s.NewHandler(&Rot13{hdlr}, opts...))
-}
-
-type Rot13 struct {
-	Rot13Handler
-}
-
-func (h *Rot13) Encode(ctx context.Context, in *EncodeRequest, out *EncodeResponse) error {
-	return h.Rot13Handler.Encode(ctx, in, out)
 }
 
 func init() { proto.RegisterFile("rot13.proto", fileDescriptor0) }
