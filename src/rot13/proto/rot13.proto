@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+service Rot13 {
+	rpc Encode(EncodeRequest) returns (EncodeResponse) {}
+}
+
+message EncodeRequest {
+	string input = 1;
+}
+
+message EncodeResponse {
+	string output = 2;
+}

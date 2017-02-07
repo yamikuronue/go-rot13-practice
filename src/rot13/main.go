@@ -1,8 +1,10 @@
 package main
 
 import (
-	"github.com/micro/go-micro"
-)
+	"github.com/micro/go-micro";
+	"context";
+	rot13 "rot13/proto"
+	)
 
 func EncodeRot13(s string) string {
 	var output []byte
@@ -30,7 +32,7 @@ func main() {
 
 type Rot13 struct{}
 
-func (g *Rot13) Encode(ctx context.Context, req *proto.EncodeRequest, rsp *proto.EncodeResponse) error {
-	rsp.output = EncodeRot13(req.input)
+func (g *Rot13) Encode(ctx context.Context, req *rot13.EncodeRequest, rsp *rot13.EncodeResponse) error {
+	rsp.Output = EncodeRot13(req.Input)
 	return nil
 }
