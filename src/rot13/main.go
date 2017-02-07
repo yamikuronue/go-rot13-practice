@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/micro/go-micro";
-	"context";
+	"github.com/micro/go-micro"
+	"golang.org/x/net/context"
 	rot13 "rot13/proto"
-	)
+)
 
 func EncodeRot13(s string) string {
 	var output []byte
@@ -25,6 +25,8 @@ func main() {
 	service := micro.NewService(
 		micro.Name("rot13"),
 	)
+
+	rot13.RegisterRot13Handler(service.Server(), new(Rot13))
 
 	service.Init()
 	service.Run()
