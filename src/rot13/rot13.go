@@ -1,4 +1,4 @@
-package rot13
+package main
 
 import (
 	"github.com/micro/go-micro"
@@ -30,7 +30,7 @@ func main() {
 
 type Rot13 struct{}
 
-func (g *Rot13) Encode(ctx context.Context, req *proto.HelloRequest, rsp *proto.HelloResponse) error {
+func (g *Rot13) Encode(ctx context.Context, req *proto.EncodeRequest, rsp *proto.EncodeResponse) error {
 	rsp.output = EncodeRot13(req.input)
 	return nil
 }

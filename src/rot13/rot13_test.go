@@ -1,4 +1,4 @@
-package rot13
+package main
 
 import (
 	"testing"
